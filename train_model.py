@@ -13,7 +13,7 @@ labels = {
     "1": 0, "2": 1, "3": 2, "4": 3, "5": 4, "6": 5, "7": 6, "8": 7, "9": 8, "a": 9,
     "b": 10, "c": 11, "d": 12, "e": 13, "f": 14, "g": 15, "h": 16, "i": 17, "j": 18,
     "k": 19, "l": 20, "m": 21, "n": 22, "o": 23, "p": 24, "q": 25, "r": 26, "s": 27,
-    "t": 28, "u": 29, "v": 30, "w": 31, "x": 32, "y": 33, "z": 34
+    "t": 28, "u": 29, "v": 30, "w": 31, "x": 32, "y": 33, "z": 34, "0": 35
 }
 
 class CustomDataset(Dataset):
@@ -65,14 +65,14 @@ def collate_fn(batch):
     }
 
 print("Starting data ingestion")
-data_path = "asl_dataset"
+data_path = "augmented_asl_dataset"
 dataset = CustomDataset(data_path, processor, labels)
 # print(labels)
 
 print("Finished processing data, starting training process")
 
 # Split data into train and test
-train_size = int(0.8 * len(dataset))
+train_size = int(0.9 * len(dataset))
 test_size = len(dataset) - train_size
 train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
 
@@ -98,7 +98,7 @@ model = ViTForImageClassification.from_pretrained(model_name, num_labels=len(lab
 # Training arguments
 training_args = TrainingArguments(
     output_dir='./results',                  # output directory
-    num_train_epochs=10,                      # total number of training epochs
+    num_train_epochs=5,                      # total number of training epochs
     per_device_train_batch_size=16,          # batch size per device during training
     warmup_steps=500,                        # number of warmup steps for learning rate scheduler
     weight_decay=0.01,                       # strength of weight decay
@@ -127,7 +127,7 @@ evaluation_percentage = eval_results['eval_accuracy'] * 100
 print(f"Model evaluation accuracy: {evaluation_percentage:.2f}%")
 
 # save the model 
-model_path = "asl_model_austin"
+model_path = "asl_model_houston"
 model.save_pretrained(model_path)
 
 # save the labels

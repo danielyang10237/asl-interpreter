@@ -20,6 +20,10 @@ for subdirectory in subdirectories_images:
     if not os.path.exists(dest_subdir_path):
         os.makedirs(dest_subdir_path)
 
+    # check if source_subdir_path is a directory
+    if not os.path.isdir(source_subdir_path):
+        continue
+
     # Move all files from the source subdirectory to the corresponding destination subdirectory
     for file_name in os.listdir(source_subdir_path):
         source_file_path = os.path.join(source_subdir_path, file_name)
