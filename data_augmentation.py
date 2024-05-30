@@ -126,7 +126,7 @@ def random_translate(image, scale_factor):
     
     return image
 
-def transform_image(image_path, destination_folder, background=True, scale=True, rotate=True, flip=True, stretch=True, translate=True):
+def transform_image(image_path, destination_folder, background=True, scale=True, rotate=True, flip=True, stretch=True, translate=True, tag=""):
     image = cv2.imread(image_path)
     
     if scale:
@@ -148,20 +148,23 @@ def transform_image(image_path, destination_folder, background=True, scale=True,
         image = add_random_background(image)
     
     image_name = os.path.basename(image_path)
+    image_name = image_name.split(".")[0] + tag + ".jpeg"
     destination_path = os.path.join(destination_folder, image_name)
     cv2.imwrite(destination_path, image)
 
 # transform_image("asl_dataset/0/hand1_0_bot_seg_1_cropped.jpeg", "augmented_asl_dataset/0")
 
 def main():
-    data_path = "asl_dataset"
-    destination_folder = "augmented_asl_dataset"
+    data_path = "asl_dataset/"
+    destination_folder = "augmented_asl_dataset/"
     
     for label in os.listdir(data_path):
         label_path = os.path.join(data_path, label)
         if not os.path.isdir(label_path):
             continue
         
+        print("performing data augmentation for ", label)
+
         destination_label_path = os.path.join(destination_folder, label)
         if not os.path.exists(destination_label_path):
             os.makedirs(destination_label_path)
@@ -169,14 +172,9 @@ def main():
         for img in os.listdir(label_path):
             img_path = os.path.join(label_path, img)
 
-            destination_label_path1 = destination_label_path + "_1"
-            transform_image(img_path, destination_label_path1)
-
-            destination_label_path2 = destination_label_path + "_2"
-            transform_image(img_path, destination_label_path2, flip=False)
-
-            destination_label_path3 = destination_label_path + "_3"
-            transform_image(img_path, destination_label_path3, stretch=False)
+            transform_image(img_path, destination_label_path, tag="_1")
+            transform_image(img_path, destination_label_path, tag="_2")
+            transform_image(img_path, destination_label_path, tag="_3")
 
 if __name__ == '__main__':
     # transform_image("asl_dataset/0/hand1_0_bot_seg_1_cropped.jpeg", "augmented_asl_dataset/0")
